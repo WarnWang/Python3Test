@@ -12,8 +12,6 @@ from pscore_match.pscore import PropensityScore
 # this list determines what variables would be used in PSM
 cov_list = ['var1', 'var2']
 
-date_string = '20171216'
-
 
 def psm_match(original_df, treatment_df):
     treatment_df = treatment_df.dropna(subset=cov_list, how='any').reset_index(drop=True)
