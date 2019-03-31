@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: ridge_regression
+# @Filename: random_forest_regression
 # @Date: 2019-03-31
 # @Author: Molly Liu
 # @Email: wangyouan@gamil.com
+
 
 import os
 from datetime import datetime
 
 import pandas as pd
+from pandas import DataFrame
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 
-# python machine learning package, for linear model, you can also use linearmodels to add fixed effects
-from sklearn.linear_model import Ridge
+# Random forest regression
+from sklearn.ensemble import RandomForestRegressor
 
 # Define variables
 STOCK_SYMBOL = 'SYMBOL'
@@ -52,7 +54,7 @@ if __name__ == '__main__':
 
     filename = os.path.join('/Users/warn/Google Drive/LiuMolly/20190331_homework',
                             '20190313 82 variables 300 stocks.csv')
-    data_df = pd.read_csv(filename)
+    data_df: DataFrame = pd.read_csv(filename)
 
     data_df_add_next_return = data_df.groupby(STOCK_SYMBOL).progress_apply(get_next_return).reset_index(drop=True)
 
@@ -84,11 +86,12 @@ if __name__ == '__main__':
         test_date: datetime = date_list[-date_index]
         target_date: datetime = date_list[-(date_index - 1)]
 
-        train_data_df = data_df_useful.loc[data_df_useful[DATE].isin(set(train_date_list))].copy()
-        test_data_df = data_df_useful.loc[data_df_useful[DATE] == test_date].copy()
+        train_data_df: DataFrame = data_df_useful.loc[data_df_useful[DATE].isin(set(train_date_list))].copy()
+        test_data_df: DataFrame = data_df_useful.loc[data_df_useful[DATE] == test_date].copy()
 
         # training model and use the model to predict return
-        reg = Ridge(alpha=8, normalize=True).fit(train_data_df[x_vars], train_data_df[y_var])
+        rf = RandomForestRegressor(max_depth=4, random_state=0, n_estimators=100)
+        reg = rf.fit(train_data_df[x_vars], train_data_df[y_var])
         test_data_df.loc[:, PREDICT_RETURN_1] = reg.predict(test_data_df[x_vars])
         test_data_df.loc[:, PREDICT_RANK] = test_data_df[PREDICT_RETURN_1].rank(ascending=False)
         test_data_df.loc[:, REAL_RANK] = test_data_df[RETURN_1].rank(ascending=False)
