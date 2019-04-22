@@ -216,8 +216,8 @@ if __name__ == '__main__':
                                             'return_corr': returncorr, 'mkt_returns': market_returns},
                                            columns=['top10', 'long-short', 'rank_corr', 'return_corr', 'mkt_returns'],
                                            index=validdate[T - test_period:])
-    result_df.to_csv(os.path.join('/Users/warn/Google Drive/LiuMolly/20190420_homework',
-                                  'result.csv'))
+    result_df.to_excel(os.path.join('/Users/warn/Google Drive/LiuMolly/20190420_homework',
+                                    'result.xlsx'))
 
     print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
     print('top 10 returns:', np.mean(top10returns))
