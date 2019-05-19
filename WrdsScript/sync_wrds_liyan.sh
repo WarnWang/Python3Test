@@ -9,3 +9,5 @@ rsync -uav --delete xiangf@wrds-cloud.wharton.upenn.edu:/wrdslin/fisd/sasdata/  
 rsync -uav --delete xiangf@wrds-cloud.wharton.upenn.edu:/wrdslin/markit/sasdata/ /home/zigan/Documents/Dataset/wrds/markit
 
 rsync -uav --delete xiangf@wrds-cloud.wharton.upenn.edu:/wrdslin/boardex/sasdata/ /home/zigan/Documents/Dataset/wrds/boardex
+
+rsync -uav --delete xiangf@wrds-cloud.wharton.upenn.edu:/wrdslin/factset/sasdata/ /home/zigan/Documents/Dataset/wrds/factset
