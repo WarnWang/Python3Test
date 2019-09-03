@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+rsync -uav --delete xiangf@wrds-cloud.wharton.upenn.edu:/wrdslin/csmar/sasdata/ /home/zigan/Documents/Dataset/wrds/csmar
 
 rsync -uav --delete xiangf@wrds-cloud.wharton.upenn.edu:/wrdslin/levin/sasdata/  /home/zigan/Documents/Dataset/wrds/levin
 
