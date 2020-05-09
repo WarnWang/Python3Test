@@ -6,6 +6,10 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gamil.com
 
+"""
+python -m MeituchaSpider.download_one_set
+"""
+
 import os
 import re
 import time
@@ -31,14 +35,20 @@ def download_one_set(url):
     set_title = soup.title.text
     logging.debug('The title of this set: {}'.format(set_title))
 
-    save_dir = os.path.join(Configuration.save_path, set_title)
+    image_id = re.findall(r'\d+', url)[-1]
+
+    save_dir = os.path.join(Configuration.save_path, image_id)
     logging.debug('Save path would be {}'.format(save_dir))
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
 
     final_page_link = soup.find_all(class_='nxt')[-1].get('href')
     last_page_reg = requests.get('{}{}'.format(url, final_page_link), headers={'user_agent': my_user_agent()})
+
     last_page_soup = BeautifulSoup(last_page_reg.content, 'lxml')
+    with open(os.path.join(save_dir, 'index.html'), 'w') as f:
+        f.write(last_page_soup.text)
+
     last_img_url = last_page_soup.find(class_='content').find_all('img')[-1].get('src')
 
     img_id = re.findall(r'\d+', last_img_url)[-1]
@@ -61,5 +71,5 @@ def download_one_set(url):
 
 
 if __name__ == '__main__':
-    url = 'https://www.meitucha.com/a/8828/'
+    url = 'https://www.meitucha.com/a/23892/'
     download_one_set(url)
