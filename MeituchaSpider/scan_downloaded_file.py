@@ -23,8 +23,8 @@ from .config_file import Configuration
 from .user_agents import my_user_agent
 
 
-def query_set_info(set_soup):
-    set_info_dict = {'set_id': set_id, 'downloaded': False, 'set_title': set_soup.title.text}
+def query_set_info(set_soup, image_id):
+    set_info_dict = {'set_id': image_id, 'downloaded': False, 'set_title': set_soup.title.text}
 
     info_tag = set_soup.find('div', class_='tuji')
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         set_url = 'https://www.meitucha.com/a/{}/'.format(set_id)
         set_page_req = requests.get(set_url, headers={'user_agent': my_user_agent()})
         set_page_soup = BeautifulSoup(set_page_req.content, 'lxml')
-        result_dict = query_set_info(set_page_soup)
+        result_dict = query_set_info(set_page_soup, set_id)
         result_dict['downloaded'] = True
 
         df: DataFrame = df.append(result_dict, ignore_index=True)

@@ -77,5 +77,5 @@ if __name__ == '__main__':
     handler.setFormatter(formatter)
     root.addHandler(handler)
 
-    for model_id in [945, 4044, 2698, 5475, 4348]:
+    for model_id in [945, 4044, 2698, 5475, 4348, 506, 799, 2265, 5482, 624, 289]:
         get_all_model_set(model_id)

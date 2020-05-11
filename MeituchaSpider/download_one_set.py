@@ -48,7 +48,7 @@ def download_one_set(url):
 
     req = requests.get(url, headers={'user_agent': my_user_agent()})
     soup = BeautifulSoup(req.content, 'lxml')
-    info_dict = query_set_info(soup)
+    info_dict = query_set_info(soup, image_id)
     if image_info.empty:
         database_info: DataFrame = database_info.append(info_dict, ignore_index=True)
         database_info.to_pickle(Configuration.database_path)
@@ -98,7 +98,8 @@ if __name__ == '__main__':
     # id_list = [20910, 20920, 12411, 6006, 4812, 3889, 4004]
     # id_list = [32718, 32623, 32721, 28045, 27598, 32719, 32626, 32703, 32598, 32517, 31271, 30195, 29085, 28063, 27447,
     #            27602, 27089, 26738, 24251, 32639, 32583, 32304, 11183, 14028]
-    id_list = [32293, 32546]
+    # id_list = [32293, 32546]
+    id_list = [32586, 32660, 30249, 30251, 32617, 31900, 25303, 24051, 22189, 32702, 10766, 10714]
     for id_info in id_list:
         url = 'https://www.meitucha.com/a/{}/'.format(id_info)
         print('Start to download {}'.format(id_info))
