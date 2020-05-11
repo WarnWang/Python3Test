@@ -59,7 +59,7 @@ def get_all_model_set(model_id):
     for set_url in set_url_list:
         logging.debug('Start downloading {}'.format(set_url))
         download_one_set(set_url)
-        logging.debug("Set downloaded failed.")
+        logging.debug("Set downloaded finished.")
         time.sleep(1)
 
     logging.info('Model {} downloaded finished'.format(model_id))

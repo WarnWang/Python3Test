@@ -58,6 +58,8 @@ def download_one_set(url):
         img_url = last_img_url.replace(img_id, str(i))
         file_name = '{}_{}'.format(image_id, img_url.split('/')[-1])
         save_path = os.path.join(save_dir, file_name)
+        if os.path.isfile(save_path):
+            continue
         logging.debug('Start to download picture {}'.format(i))
         try:
             download_picture(img_url, save_path, headers)
