@@ -18,8 +18,8 @@ import requests
 
 from bs4 import BeautifulSoup
 
-from .user_agents import my_user_agent
-from .download_one_set import download_one_set
+from MeituchaSpider.user_agents import my_user_agent
+from MeituchaSpider.download_one_set import download_one_set
 
 
 def get_page_set_info(page_soup):
@@ -77,5 +77,5 @@ if __name__ == '__main__':
     handler.setFormatter(formatter)
     root.addHandler(handler)
 
-    for model_id in [945, 4044, 2698, 5475, 4348, 506, 799, 2265, 5482, 624, 289]:
+    for model_id in [945, 4044, 4348, 506, 799, 2265, 5482, 624, 289, 292]:
         get_all_model_set(model_id)

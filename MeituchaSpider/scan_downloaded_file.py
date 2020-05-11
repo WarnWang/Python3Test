@@ -19,8 +19,8 @@ import pandas as pd
 from pandas import DataFrame
 from bs4 import BeautifulSoup
 
-from .config_file import Configuration
-from .user_agents import my_user_agent
+from MeituchaSpider.config_file import Configuration
+from MeituchaSpider.user_agents import my_user_agent
 
 
 def query_set_info(set_soup, image_id):
