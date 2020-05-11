@@ -16,10 +16,13 @@ import time
 import logging
 import requests
 
+import pandas as pd
+from pandas import DataFrame
 from bs4 import BeautifulSoup
 
 from .user_agents import my_user_agent
 from .config_file import Configuration
+from .scan_downloaded_file import query_set_info
 
 
 def download_picture(img_url, save_name, header):
@@ -30,12 +33,28 @@ def download_picture(img_url, save_name, header):
 
 
 def download_one_set(url):
+    image_id = re.findall(r'\d+', url)[-1]
+    database_info = pd.read_pickle(Configuration.database_path)
+    image_info = database_info.loc[database_info['set_id'] == image_id]
+    if image_info.empty:
+        logging.debug('No download information, continue')
+    else:
+        image_row = image_info.iloc[0]
+        if image_row['downloaded']:
+            logging.debug('Image {} has been downloaded.'.format(image_id))
+            return
+        else:
+            logging.debug('Image {} still need to be downloaded'.format(image_id))
+
     req = requests.get(url, headers={'user_agent': my_user_agent()})
     soup = BeautifulSoup(req.content, 'lxml')
+    info_dict = query_set_info(soup)
+    if image_info.empty:
+        database_info: DataFrame = database_info.append(info_dict, ignore_index=True)
+        database_info.to_pickle(Configuration.database_path)
+
     set_title = soup.title.text
     logging.debug('The title of this set: {}'.format(set_title))
-
-    image_id = re.findall(r'\d+', url)[-1]
 
     save_dir = os.path.join(Configuration.save_path, image_id)
     logging.debug('Save path would be {}'.format(save_dir))
@@ -71,6 +90,9 @@ def download_one_set(url):
             headers = {'user_agent': my_user_agent()}
             time.sleep(5)
 
+    database_info.loc[database_info['set_id'] == image_id, 'downloaded'] = True
+    database_info.to_pickle(Configuration.database_path)
+    logging.info('Set {} downloaded finished'.format(image_id))
 
 if __name__ == '__main__':
     # id_list = [20910, 20920, 12411, 6006, 4812, 3889, 4004]
