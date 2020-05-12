@@ -30,6 +30,7 @@ def download_picture(img_url, save_name, header):
 
     with open(save_name, 'wb') as f:
         f.write(res.content)
+    res.close()
 
 
 def download_one_set(url):
@@ -48,6 +49,7 @@ def download_one_set(url):
 
     req = requests.get(url, headers={'user_agent': my_user_agent()})
     soup = BeautifulSoup(req.content, 'lxml')
+    req.close()
     info_dict = query_set_info(soup, image_id)
     if image_info.empty:
         database_info: DataFrame = database_info.append(info_dict, ignore_index=True)
@@ -88,6 +90,7 @@ def download_one_set(url):
             image_url = '{}?page={}'.format(url, page_num + 2)
             page_req = requests.get(image_url, headers=headers)
             soup = BeautifulSoup(page_req.content, 'lxml')
+            page_req.close()
 
     database_info.loc[database_info['set_id'] == image_id, 'downloaded'] = True
     database_info.to_pickle(Configuration.database_path)

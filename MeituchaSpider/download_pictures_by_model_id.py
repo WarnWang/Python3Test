@@ -37,6 +37,7 @@ def get_all_model_set(model_id):
     page_req = requests.get(model_page_url, headers={'user_agent': my_user_agent()})
 
     first_page_soup = BeautifulSoup(page_req.content, 'lxml')
+    page_req.close()
 
     # Check if multiple page
     pagination_tag = first_page_soup.find(class_='pagination')
@@ -52,6 +53,7 @@ def get_all_model_set(model_id):
             page_url = '{}?page={}'.format(model_page_url, i)
             next_page_reg = requests.get(page_url, headers={'user_agent': my_user_agent()})
             page_soup = BeautifulSoup(next_page_reg.content, 'lxml')
+            next_page_reg.close()
             set_url_list.extend(get_page_set_info(page_soup))
             time.sleep(5)
 
