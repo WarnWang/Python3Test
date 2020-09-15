@@ -81,5 +81,5 @@ if __name__ == '__main__':
 
     # for model_id in [945, 4044, 4348, 506, 799, 2265, 5482, 624, 289, 292]:
     # for model_id in [292, 3152, 943, 2172, 3172]:
-    for model_id in [908, 943, 2172, 3172]:
+    for model_id in [2172, 3172]:
         get_all_model_set(model_id)
