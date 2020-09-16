@@ -41,8 +41,22 @@ if __name__ == '__main__':
     ctat_df_valid: DataFrame = ctat_df.drop_duplicates(subset=['gvkey', 'year'], keep='last')
 
     ctat_df_valid.loc[:, 'cusip8'] = ctat_df_valid['cusip'].str[:-1]
-    kld_with_ctat: DataFrame = kld_df.merge(ctat_df_valid.dropna(subset=['cusip', 'state'], how='any'),
-                                            on=['cusip8', 'year'], how='inner')
+    kld_with_ctat: DataFrame = kld_df.merge(
+        ctat_df_valid.dropna(subset=['cusip', 'state'], how='any').drop(['tic'], axis=1), on=['cusip8', 'year'],
+        how='left')
+    kld_with_ctat2: DataFrame = kld_with_ctat.merge(
+        ctat_df_valid.dropna(subset=['tic', 'state'], how='any').drop(['cusip8'], axis=1), on=['tic', 'year'],
+        how='left')
+
+    suffix_key_list = [i for i in kld_with_ctat2.keys() if i.endswith('_x')]
+    key_to_drop = list()
+    for key in suffix_key_list:
+        key_y = '{}y'.format(key[:-1])
+        key_to_drop.extend([key, key_y])
+        final_key = key[:-2]
+        kld_with_ctat2.loc[:, final_key] = kld_with_ctat2[key].fillna(kld_with_ctat2[key_y])
+
+    kld_with_ctat3: DataFrame = kld_with_ctat2.drop(key_to_drop, axis=1)
 
     # Generate a UD state information
     state_list = kld_with_ctat['state'].drop_duplicates()
@@ -58,13 +72,14 @@ if __name__ == '__main__':
         tmp_df.loc[:, 'ud_law'] = (tmp_df['year'] >= ud_year).astype(int)
         tmp_df.loc[:, 'state'] = state
         ud_law_df: DataFrame = ud_law_df.append(tmp_df, ignore_index=True)
+    ud_law_df.loc[:, 'year'] = ud_law_df.year.astype(int)
+    ud_law_df.loc[:, 'ud_law'] = ud_law_df.ud_law.astype(int)
 
-    kld_with_ctat_ud: DataFrame = kld_with_ctat.merge(ud_law_df, on=['state', 'year'])
+    kld_with_ctat_ud: DataFrame = kld_with_ctat3.dropna(subset=['state']).merge(ud_law_df, on=['state', 'year'])
     kld_with_ctat_ud.loc[:, 'at_ln'] = kld_with_ctat_ud['at'].apply(np.log)
     kld_with_ctat_ud.loc[:, 'roa'] = kld_with_ctat_ud['ni'] / kld_with_ctat_ud['at']
     kld_with_ctat_ud.loc[:, 'cash'] = kld_with_ctat_ud['che'] / kld_with_ctat_ud['at']
     kld_with_ctat_ud.loc[:, 'leverage'] = (kld_with_ctat_ud['dlc'] + kld_with_ctat_ud['dltt']) / kld_with_ctat_ud['at']
-    kld_with_ctat_ud2: DataFrame = kld_with_ctat_ud.replace([np.inf, -np.inf], np.nan).drop(['do'], axis=1)
-    kld_with_ctat_ud2.loc[:, 'year'] = kld_with_ctat_ud2['year'].astype(int)
+    kld_with_ctat_ud2: DataFrame = kld_with_ctat_ud.replace([np.inf, -np.inf], np.nan).drop(['do', 'busdesc'], axis=1)
     kld_with_ctat_ud2.to_stata(os.path.join(const.OUTPUT_PATH, '20200916_kld_ud_law_regression_data.dta'),
                                write_index=False)
