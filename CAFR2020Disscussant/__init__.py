@@ -14,7 +14,8 @@ class PathInfo(object):
     DATABASE_PATH = '/home/zigan/Documents/wangyouan/database'
 
     PROJECT_PATH = '/home/zigan/Documents/wangyouan/study/CAFR2020'
-
+    OUTPUT_PATH = os.path.join(PROJECT_PATH, 'output')
+    TEMP_PATH = os.path.join(PROJECT_PATH, 'temp')
 
 class Constant(PathInfo):
     UD_LAW = {'GA': 1989, 'MI': 1989, 'FL': 1990, 'WI': 1991, 'MT': 1992, 'UT': 1992, 'VA': 1992, 'MS': 1993,
